@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: My RESTful API
+  description: API for fetching data from MongoDB and interacting with in-memory database
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /records:
+    get:
+      summary: Retrieve data from MongoDB
+      description: Retrieves data from the provided MongoDB collection and returns the results.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example:
+                code: 0
+                msg: Success
+                records:
+                  - key: TAKwGc6Jr4i8Z487
+                    createdAt: "2017-01-28T01:22:14.398Z"
+                    totalCount: 2800
+                  - key: NAeQ8eX7e5TEg7oH
+                    createdAt: "2017-01-27T08:19:14.135Z"
+                    totalCount: 2900
+    post:
+      summary: Not Allowed
+      description: POST method not allowed for this endpoint.
+      responses:
+        '405':
+          description: Method Not Allowed
+  /in-memory:
+    get:
+      summary: Retrieve data from in-memory database
+      description: Retrieves data from the in-memory database and returns the results.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example:
+                key: active-tabs
+                value: getir
+    post:
+      summary: Add data to in-memory database
+      description: Adds data to the in-memory database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                value:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example:
+                key: "active-tabs"
+                value: "getir"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                error: "Bad Request"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                error: "Internal Server Error"
