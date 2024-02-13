@@ -48,7 +48,29 @@ func (m *MongoDBStorage) Close() {
 	}
 }
 
-func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxCount int) ([]model.DBRecord, error) {
+func (m *MongoDBStorage) GetAllRecords() ([]model.DBRecord, error) {
+	cur, err := m.collection.Find(context.Background(), bson.D{})
+	if err != nil {
+		log.Println("error while finding: ", err)
+		return nil, fmt.Errorf("error while finding: %v", err)
+	}
+
+	defer cur.Close(context.Background())
+
+	var records []model.DBRecord
+	for cur.Next(context.Background()) {
+		var record model.DBRecord
+		err := cur.Decode(&record)
+		if err != nil {
+			return nil, fmt.Errorf("error while decoding: %v", err)
+		}
+		records = append(records, record)
+	}
+
+	return records, nil
+}
+
+func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxCount int64) ([]model.DBRecord, error) {
 	matchStage1 := bson.D{ //first match for range date time
 		{Key: "$match", Value: bson.D{
 			{Key: "createdAt", Value: bson.D{
@@ -95,8 +117,9 @@ func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxC
 
 		var record model.DBRecord
 		record.Key = result.Map()["key"].(string)
-		record.CreatedAt = result.Map()["createdAt"].(primitive.DateTime).Time().Format(time.RFC3339)
-		record.TotalCount = result.Map()["totalCount"].(int)
+		record.CreatedAt = result.Map()["createdAt"].(primitive.DateTime).Time()
+		record.TotalCount = int(result.Map()["totalCount"].(int64))
+
 		records = append(records, record)
 	}
 

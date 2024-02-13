@@ -22,7 +22,7 @@ import (
 
 func main() {
 	// Initialize MongoDB storage
-	mongoStorage, err := storage.NewMongoDBStorage("mongodb+srv://challengeUser:WUMglwNBaydH8Yvu@challenge-xzwqd.mongodb.net/getircase-study?retryWrites=true", "getir-case-study", "records")
+	mongoStorage, err := storage.NewMongoDBStorage("mongodb+srv://challengeUser:WUMglwNBaydH8Yvu@challenge-xzwqd.mongodb.net/getircase-study?retryWrites=true", "getircase-study", "records")
 	if err != nil {
 		log.Fatalf("Failed to initialize MongoDB storage: %v", err)
 	}

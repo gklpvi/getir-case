@@ -17,7 +17,7 @@ func NewServer(service *service.Service) *Server {
 
 func (s *Server) Start() {
 	http.HandleFunc("/from-db", s.service.GetRecordsFromDB)
-	//http.HandleFunc("/from-db", s.service.GetRecordsFromDB)
+	http.HandleFunc("/all-from-db", s.service.GetRecordsFromDB)
 
 	http.ListenAndServe(":8080", nil)
 }
