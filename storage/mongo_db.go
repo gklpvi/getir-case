@@ -51,8 +51,8 @@ func (m *MongoDBStorage) Close() {
 func (m *MongoDBStorage) GetAllRecords() ([]model.DBRecord, error) {
 	cur, err := m.collection.Find(context.Background(), bson.D{})
 	if err != nil {
-		log.Println("error while finding: ", err)
-		return nil, fmt.Errorf("error while finding: %v", err)
+		log.Println("error while fetching all records: ", err)
+		return nil, err
 	}
 
 	defer cur.Close(context.Background())
@@ -62,7 +62,8 @@ func (m *MongoDBStorage) GetAllRecords() ([]model.DBRecord, error) {
 		var record model.DBRecord
 		err := cur.Decode(&record)
 		if err != nil {
-			return nil, fmt.Errorf("error while decoding: %v", err)
+			log.Println("error while decoding: ", err)
+			return nil, err
 		}
 		records = append(records, record)
 	}
@@ -102,7 +103,8 @@ func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxC
 
 	cur, err := m.collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		return nil, fmt.Errorf("error while aggregating: %v", err)
+		log.Println("error while aggregating: ", err)
+		return nil, err
 	}
 
 	defer cur.Close(context.Background())
@@ -112,7 +114,8 @@ func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxC
 		var result bson.D
 		err := cur.Decode(&result)
 		if err != nil {
-			return nil, fmt.Errorf("error while decoding: %v", err)
+			log.Println("error while decoding: ", err)
+			return nil, err
 		}
 
 		var record model.DBRecord
@@ -129,5 +132,6 @@ func (m *MongoDBStorage) GetRecords(startDate, endDate time.Time, minCount, maxC
 // AddItem adds a new item to MongoDB
 func (m *MongoDBStorage) AddItem(item *model.DBRecord) error {
 	_, err := m.collection.InsertOne(context.Background(), item)
+
 	return err
 }
