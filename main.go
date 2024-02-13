@@ -48,10 +48,10 @@ func main() {
 	//inMemoryStorage := models.NewInMemoryStorage()
 
 	// Initialize API service
-	svc := service.NewService(mongoStorage, inMemoryStorage)
+	svc := service.New(mongoStorage, inMemoryStorage)
 
 	// Initialize HTTP server
-	srv := server.NewServer(svc)
+	srv := server.New(svc)
 	log.Println("HTTP server initialized")
 
 	// Start HTTP server
