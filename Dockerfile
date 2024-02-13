@@ -14,7 +14,7 @@ RUN go mod download
 # Copy the source code into the container
 COPY . .
 
-## Build the Go app, if you want to
-#RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+# Build the Go app, if needed
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o outpout/app .
 
 ENTRYPOINT ["go", "run", "main.go"]

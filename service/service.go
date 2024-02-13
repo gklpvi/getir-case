@@ -3,8 +3,8 @@ package service
 import (
 	"time"
 
-	"getir-case/storage"
 	"getir-case/model"
+	"getir-case/storage"
 )
 
 type Service struct {
@@ -19,7 +19,7 @@ func New(dbStorage *storage.MongoDBStorage, inMemoryStorage *storage.InMemorySto
 	}
 }
 
-// logic in service layer is simple and may be seen redundant but it is necessary for separation of concerns
+// logic in service layer is simple and may be seen redundant, but it is necessary for separation of concerns
 // and helpful if application grows
 
 func (s *Service) GetRecordsFromDB(startDate, endDate time.Time, minCount, maxCount int64) ([]model.DBRecord, error) {
@@ -35,7 +35,7 @@ func (s *Service) AddRecordToIM(key, value string) error {
 		&model.IMRecord{
 			Key:   key,
 			Value: value,
-	})
+		})
 	return nil
 }
 
