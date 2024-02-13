@@ -14,6 +14,9 @@ package main
 
 import (
 	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 
 	"getir-case/server"
 	"getir-case/service"
@@ -21,14 +24,26 @@ import (
 )
 
 func main() {
+	//load env variables
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	dbUri := os.Getenv("DB_URI")
+	dbName := os.Getenv("DB_NAME")
+	collectionName := os.Getenv("COLLECTION_NAME")
+
 	// Initialize MongoDB storage
-	mongoStorage, err := storage.NewMongoDBStorage("mongodb+srv://challengeUser:WUMglwNBaydH8Yvu@challenge-xzwqd.mongodb.net/getircase-study?retryWrites=true", "getircase-study", "records")
+	mongoStorage, err := storage.NewMongoDBStorage(dbUri, dbName, collectionName)
 	if err != nil {
 		log.Fatalf("Failed to initialize MongoDB storage: %v", err)
 	}
+	log.Println("MongoDB storage initialized")
 
 	// Initialize in-memory storage
 	inMemoryStorage := storage.NewInMemoryStorage()
+	log.Println("In-memory storage initialized")
 
 	//inMemoryStorage := models.NewInMemoryStorage()
 
@@ -37,6 +52,7 @@ func main() {
 
 	// Initialize HTTP server
 	srv := server.NewServer(svc)
+	log.Println("HTTP server initialized")
 
 	// Start HTTP server
 	srv.Start()

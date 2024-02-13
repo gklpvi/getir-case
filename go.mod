@@ -2,7 +2,10 @@ module getir-case
 
 go 1.21.3
 
-require go.mongodb.org/mongo-driver v1.13.1
+require (
+	github.com/joho/godotenv v1.5.1
+	go.mongodb.org/mongo-driver v1.13.1
+)
 
 require (
 	github.com/golang/snappy v0.0.1 // indirect
