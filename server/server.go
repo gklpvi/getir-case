@@ -22,5 +22,5 @@ func (s *Server) Start() {
 	http.HandleFunc("/in-memory", s.InMemoryHandler)
 	http.HandleFunc("/all-in-memory", s.GetAllRecordsFromIM)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe("0.0.0.0:8080", nil)
 }
