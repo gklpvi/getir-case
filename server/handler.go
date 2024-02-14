@@ -5,14 +5,22 @@ import (
 	"getir-case/model"
 	"getir-case/utils"
 	"net/http"
+
+    "github.com/go-playground/validator/v10"
 )
 
 func (s *Server) GetRecordsFromDB(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		// we use pointer to not mistake us on missing fields in request body by filling with default values
 		// thus use declared tags in model
+
 		var requestBody *model.DBHandlerRequestBody
 		err := json.NewDecoder(r.Body).Decode(&requestBody)
+
+		// validate request body to check if it has required fields
+		validator := validator.New()
+		err = validator.Struct(requestBody)
+		
 		if err != nil {
 			utils.RespondWithJSON(w, http.StatusBadRequest, map[string]string{
 				"code":    "1",
@@ -92,6 +100,10 @@ func (s *Server) InMemoryHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Server) addRecordToIM(w http.ResponseWriter, r *http.Request) {
 	var requestBody *model.IMHandlerRequestBody
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
+
+	// validate request body to check if it has required fields
+	validator := validator.New()
+	err = validator.Struct(requestBody)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request body")
 		return
