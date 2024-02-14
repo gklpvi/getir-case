@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"getir-case/model"
 	"getir-case/utils"
-	"log"
 	"net/http"
 )
 
@@ -52,14 +51,12 @@ func (s *Server) GetRecordsFromDB(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("Records retrieved successfully")
 		utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{
 			"code":    0,
 			"msg":     "Success",
 			"records": records,
 		})
 	} else {
-		log.Println("Method not allowed")
 		utils.RespondWithJSON(w, http.StatusInternalServerError, map[string]string{
 			"code":    "2",
 			"msg":     "Method not allowed",
@@ -75,7 +72,6 @@ func (s *Server) GetAllRecordsFromDB(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("All records retrieved successfully")
 	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{
 		"code":    0,
 		"msg":     "Success",
@@ -89,7 +85,6 @@ func (s *Server) InMemoryHandler(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodGet {
 		s.getRecordFromIM(w, r)
 	} else {
-		log.Println("Method not allowed")
 		utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
 	}
 }
@@ -98,19 +93,16 @@ func (s *Server) addRecordToIM(w http.ResponseWriter, r *http.Request) {
 	var requestBody *model.IMHandlerRequestBody
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {
-		log.Println("Invalid request body, err: ", err)
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
 	err = s.service.AddRecordToIM(requestBody.Key, requestBody.Value)
 	if err != nil {
-		log.Println("Error while adding in-memory data, err: ", err)
 		utils.RespondWithError(w, http.StatusInternalServerError, "Error while adding record, err: "+err.Error())
 		return
 	}
 
-	log.Println("In-memory data added successfully")
 	utils.RespondWithJSON(w, http.StatusOK, map[string]string{
 		"key": requestBody.Key,
 		"msg": "Record added successfully",
